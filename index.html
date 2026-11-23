@@ -442,12 +442,15 @@ RING_IDS.forEach(function(id,k){
 });
 function normDeg(d){ return ((d+180)%360+360)%360-180; }
 // posição inicial em linha: ordem da esquerda para a direita segue o ângulo no círculo, com leve leque em profundidade
-(function(){
-  var order=rcards.slice().sort(function(a,b){ return normDeg(a._a)-normDeg(b._a); }), mid=(N-1)/2, SP=150;
-  order.forEach(function(c,j){ var o=j-mid; c._lx=o*SP; c._lz=-Math.abs(o)*38+40; c._lr=-o*3.5; });
-})();
+var lineOrder=rcards.slice().sort(function(a,b){ return normDeg(a._a)-normDeg(b._a); });
+function layLine(){
+  // a linha cabe na largura da tela (com uma leve sobreposição entre os vídeos)
+  var sc=parseFloat(ringPos.style.getPropertyValue("--s"))||1, mid=(N-1)/2;
+  var SP=Math.max(80,Math.min(165,(innerWidth*0.86/sc-210)/(N-1)));
+  lineOrder.forEach(function(c,j){ var o=j-mid; c._lx=o*SP; c._lz=-Math.abs(o)*30+30; c._lr=-o*3; });
+}
 function fitRing(){ var s=Math.min(innerWidth/1600, innerHeight/1060); if(innerWidth<700) s=innerWidth/880; s=Math.max(.42,Math.min(1.15,s)); ringPos.style.setProperty("--s",s.toFixed(3)); }
-fitRing(); window.addEventListener("resize",fitRing);
+fitRing(); layLine(); window.addEventListener("resize",function(){ fitRing(); layLine(); });
 
 // texto "em cena" com efeito de embaralhar
 var curNow=-1, scrT=null;
@@ -502,13 +505,13 @@ var rPrev=performance.now();
       c._rf.style.opacity=((.08+.16*Math.max(0,f))*(1-h*.3)).toFixed(3);
       var b=.3+.7*Math.max(0,(f+.2)/1.2);
       c._front.style.filter="grayscale("+(1-h).toFixed(3)+") brightness("+(b+(1-b)*h).toFixed(3)+") contrast("+(1.08-h*.08).toFixed(3)+")";
-      c.style.pointerEvents = f>.15 ? "auto" : "none";
+      c.style.pointerEvents = (E>=1 && f>.15) ? "auto" : "none";
       if(f>best){ best=f; bi=q; }
       if(f>.25) playFront.push(c);
     }
     if(!hoverCount) setNow(bi);
     // vídeos: no computador tocam os da frente; no celular só o central
-    for(var j=0;j<rcards.length;j++){ var cc=rcards[j], want = canHover ? (cc._f>.25) : (j===bi);
+    for(var j=0;j<rcards.length;j++){ var cc=rcards[j], want = E<1 ? false : (canHover ? (cc._f>.25) : (j===bi));
       if(want && !cc._playing){ if(!cc._v.src) cc._v.src=cc._v.dataset.src; safePlay(cc._v); cc._playing=true; cc.classList.add("live"); }
       else if(!want && cc._playing){ cc._v.pause(); cc._playing=false; cc.classList.remove("live"); } }
   }
@@ -726,13 +729,14 @@ if(hasG && !reduce){
   var tl=gsap.timeline();
   tl.to(o,{f:24,duration:.9,ease:"none",onUpdate:function(){ltc.textContent=tc(o.f/24);}})
     .to(loader,{yPercent:-100,duration:.9,ease:"power4.inOut",onComplete:killLoader})
-    .to(MORPH,{show:1,duration:1.1,ease:"power2.out"},"-=.5")
-    .to(MORPH,{e:1,duration:2.8,ease:"power3.inOut"},"+=.35")
-    .from(".vf i",{scale:0,opacity:0,duration:.7,ease:"power3.out",stagger:.07},"-=1.7")
-    .from(".hname .line span",{yPercent:110,duration:1.1,ease:"power4.out",stagger:.09},"-=1.5")
-    .from(".hc-kicker,.hc-right > *",{opacity:0,y:16,duration:.8,stagger:.08,ease:"power3.out"},"-=1.0")
-    .from("#services > *",{opacity:0,y:-10,duration:.6,stagger:.07,ease:"power3.out"},"-=1.1")
-    .from("header.top",{opacity:0,duration:.6},"-=.8");
+    .addLabel("in","-=.5")
+    .to(MORPH,{show:1,duration:1.1,ease:"power2.out"},"in")
+    .from("header.top",{opacity:0,duration:.6},"in")
+    .from("#services > *",{opacity:0,y:-10,duration:.6,stagger:.07,ease:"power3.out"},"in+=.2")
+    .from(".vf i",{scale:0,opacity:0,duration:.7,ease:"power3.out",stagger:.07},"in+=.3")
+    .from(".hname .line span",{yPercent:110,duration:1.1,ease:"power4.out",stagger:.09},"in+=.35")
+    .from(".hc-kicker,.hc-right > *",{opacity:0,y:16,duration:.8,stagger:.08,ease:"power3.out"},"in+=.6")
+    .to(MORPH,{e:1,duration:2.4,ease:"sine.inOut"},"in+=1.2");
 
   gsap.to(".hero-copy",{yPercent:-40,opacity:0,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:true}});
   gsap.to("#stage",{yPercent:-14,scale:.9,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:true}});
