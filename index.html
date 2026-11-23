@@ -373,7 +373,6 @@ footer{padding:clamp(100px,12vw,180px) var(--gutter) 24px;overflow:hidden}
   </div>
 </div>
 
-<div class="proto mono muted">Protótipo · títulos e funções provisórios</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -431,8 +430,8 @@ var rcards=[], hoverCount=0, dragMoved=false;
 RING_IDS.forEach(function(id,k){
   var i=idxOf(id), p=P[i];
   var el=document.createElement("div"); el.className="rcard"; el.dataset.i=i;
-  el.innerHTML='<div class="rshadow"></div><div class="rinner"><div class="reflect" style="background-image:url(media/'+id+'.jpg)"></div><div class="face front"><img alt="" src="media/'+id+'.jpg"><video muted loop playsinline preload="none" data-src="media/'+id+'.mp4"></video></div>'+
-    '<div class="face back"><img alt="" src="media/'+id+'.jpg"></div><i class="edge l"></i><i class="edge r"></i><i class="edge t"></i><i class="edge b"></i><span class="rlab mono">'+p.t+'</span></div>';
+  el.innerHTML='<div class="rshadow"></div><div class="rinner"><div class="reflect" style="background-image:url(./'+id+'.jpg)"></div><div class="face front"><img alt="" src="./'+id+'.jpg"><video muted loop playsinline preload="none" data-src="./'+id+'.mp4"></video></div>'+
+    '<div class="face back"><img alt="" src="./'+id+'.jpg"></div><i class="edge l"></i><i class="edge r"></i><i class="edge t"></i><i class="edge b"></i><span class="rlab mono">'+p.t+'</span></div>';
   ring.appendChild(el);
   el._a=k*360/N; el._y=0; el._h=0; el._ht=0; el._f=0; el._playing=false;
   el._inner=el.querySelector(".rinner"); el._sh=el.querySelector(".rshadow"); el._el=el.querySelector(".edge.l"); el._er=el.querySelector(".edge.r"); el._rf=el.querySelector(".reflect"); el._front=el.querySelector(".face.front"); el._v=el.querySelector("video"); el._k=k;
@@ -522,7 +521,7 @@ function stopCard(c){ var v=c.querySelector("video"); c.classList.remove("playin
 function makeCard(i){
   var p=P[i], a=document.createElement("article"); a.className="card "+(p.v?"v":"h"); a.dataset.cat=p.cat; a.dataset.i=i; a.tabIndex=0;
   a.setAttribute("aria-label",p.t+", "+CATS[p.cat]);
-  a.innerHTML='<div class="media"><img alt="" loading="lazy" src="media/'+p.id+'.jpg"><video muted loop playsinline preload="none" data-src="media/'+p.id+'.mp4"></video>'+
+  a.innerHTML='<div class="media"><img alt="" loading="lazy" src="./'+p.id+'.jpg"><video muted loop playsinline preload="none" data-src="./'+p.id+'.mp4"></video>'+
     '<span class="fmt mono">'+(p.v?"9:16":"16:9")+'</span>'+
     '<span class="tc mono"><span class="dot"></span><span class="tcv">00:00:00:00</span></span></div>'+
     '<div class="meta"><h3>'+p.t+'</h3><span class="sub mono">'+p.c+'</span><span class="role mono">'+p.f+'</span></div>';
@@ -618,7 +617,7 @@ function fillLB(i){
   lbIdx=i;
   var p = i<0 ? {id:"reel",t:"Showreel 2026",cat:null,c:"Seleção de trabalhos",f:"Direção · Câmera · Montagem",v:false} : P[i];
   lbFrame.classList.toggle("v",!!p.v);
-  lbVid.poster="media/"+p.id+".jpg"; lbVid.src="media/"+p.id+".mp4"; lbVid.muted=false;
+  lbVid.poster="./"+p.id+".jpg"; lbVid.src="./"+p.id+".mp4"; lbVid.muted=false;
   var pr=lbVid.play(); if(pr&&pr.catch) pr.catch(function(){ lbVid.muted=true; lbVid.play().catch(function(){}); });
   lbTitle.textContent=p.t; lbCat.textContent=p.cat?CATS[p.cat]:"Showreel";
   lbCred.innerHTML='<div><span class="muted">Projeto</span><span>'+p.c+'</span></div><div><span class="muted">Função</span><span>'+p.f+'</span></div><div><span class="muted">Formato</span><span>'+(p.v?"Vertical 9:16":"Horizontal 16:9")+'</span></div><div><span class="muted">Nesta página</span><span>Prévia · vídeo completo em breve</span></div>';
