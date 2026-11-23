@@ -362,7 +362,7 @@ footer{padding:clamp(100px,12vw,180px) var(--gutter) 24px;overflow:hidden}
     <button class="x mono" id="lbClose">Fechar ✕</button>
   </div>
   <div class="lb-stage">
-    <div class="lb-frame" id="lbFrame"><video id="lbVid" playsinline loop controls></video></div>
+    <div class="lb-frame" id="lbFrame"><video id="lbVid" playsinline controls preload="auto"></video></div>
   </div>
   <div class="lb-bottom">
     <div>
@@ -624,6 +624,8 @@ function route(initial){
 window.addEventListener("hashchange",function(){route(false);});
 
 /* ---------- lightbox ---------- */
+var DUR={"01":23,"02":42,"03":22,"04":49,"05":26,"06":35,"07":88,"08":51,"09":129,"10":70,"11":85,"12":76,"13":41,"14":55,"15":143,"16":55,"17":41,"18":47,"19":30,"20":77,"21":44,"22":126};
+function fmtDur(t){ return Math.floor(t/60)+":"+("0"+(t%60)).slice(-2); }
 var lb=document.getElementById("lb"), lbVid=document.getElementById("lbVid"), lbFrame=document.getElementById("lbFrame");
 var lbTitle=document.getElementById("lbTitle"), lbCat=document.getElementById("lbCat"), lbCred=document.getElementById("lbCredits");
 var lbIdx=-1, lbOpen=false, lastFocus=null;
@@ -632,10 +634,10 @@ function fillLB(i){
   lbIdx=i;
   var p = i<0 ? {id:"reel",t:"Showreel 2026",cat:null,c:"Seleção de trabalhos",f:"Direção · Câmera · Montagem",v:false} : P[i];
   lbFrame.classList.toggle("v",!!p.v);
-  lbVid.poster="./"+p.id+".jpg"; lbVid.src="./"+p.id+".mp4"; lbVid.muted=false;
+  lbVid.poster="./"+p.id+".jpg"; lbVid.src=(i<0?"./reel.mp4":"./full/"+p.id+".mp4"); lbVid.loop=(i<0); lbVid.muted=false;
   var pr=lbVid.play(); if(pr&&pr.catch) pr.catch(function(){ lbVid.muted=true; lbVid.play().catch(function(){}); });
   lbTitle.textContent=p.t; lbCat.textContent=p.cat?CATS[p.cat]:"Showreel";
-  lbCred.innerHTML='<div><span class="muted">Projeto</span><span>'+p.c+'</span></div><div><span class="muted">Função</span><span>'+p.f+'</span></div><div><span class="muted">Formato</span><span>'+(p.v?"Vertical 9:16":"Horizontal 16:9")+'</span></div><div><span class="muted">Nesta página</span><span>Prévia · vídeo completo em breve</span></div>';
+  lbCred.innerHTML='<div><span class="muted">Projeto</span><span>'+p.c+'</span></div><div><span class="muted">Função</span><span>'+p.f+'</span></div><div><span class="muted">Formato</span><span>'+(p.v?"Vertical 9:16":"Horizontal 16:9")+'</span></div><div><span class="muted">Duração</span><span>'+(DUR[p.id]?fmtDur(DUR[p.id]):"—")+'</span></div>';
   document.getElementById("lbPrev").style.visibility=document.getElementById("lbNext").style.visibility=(i<0?"hidden":"visible");
 }
 function openLB(i){
