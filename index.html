@@ -486,8 +486,11 @@ var rPrev=performance.now();
     if(!drag.on && MORPH.e>=1){ var target=hoverCount?0:BASE; vel+=(target-vel)*kv; A+=vel*dt; }
     tilt.x+=(tilt.tx-tilt.x)*kt; tilt.y+=(tilt.ty-tilt.y)*kt;
     var E=MORPH.e, SH=MORPH.show;
-    ringPos.style.transform="scale(var(--s,1)) translateY("+((1-SH)*70).toFixed(1)+"px) rotateX("+((-10+tilt.y*9)*(.35+.65*E)).toFixed(2)+"deg) rotateZ("+(-tilt.x*3).toFixed(2)+"deg)";
-    ringPos.style.opacity=SH.toFixed(3);
+    // inclinação de cima já em repouso + leve balanço contínuo, para o 3D aparecer sem precisar do mouse
+    var tt=now/1000, swX=reduce?0:Math.sin(tt*.45)*2.5, swZ=reduce?0:Math.sin(tt*.3)*1.2;
+    ringPos.style.transform="scale(var(--s,1)) translateY("+((1-SH)*70).toFixed(1)+"px) rotateX("+(-17+swX+tilt.y*9).toFixed(2)+"deg) rotateZ("+(swZ-tilt.x*3).toFixed(2)+"deg)";
+    // a opacidade fica no palco: opacidade no próprio anel achata o 3D em alguns navegadores
+    stage.style.opacity=SH.toFixed(3);
     var best=-2, bi=0, playFront=[];
     for(var q=0;q<rcards.length;q++){
       // posição: mistura entre a linha inicial e o círculo (E=0 linha, E=1 círculo)
