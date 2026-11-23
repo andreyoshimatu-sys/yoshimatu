@@ -463,7 +463,7 @@ function setNow(k,force){ if(!nowN) return; if(k===curNow && !force) return; cur
   nowN.textContent=(k<9?"0":"")+(k+1)+"/"+(N<10?"0":"")+N; scramble(nowT,p.t); }
 
 // arrastar, roda do mouse e inclinação
-var A=0, vel=0, BASE=reduce?0:11, ringPaused=false, ringVisible=true, MORPH={e:anim?0:1,show:anim?0:1}, tilt={x:0,y:0,tx:0,ty:0};
+var A=0, vel=reduce?0:11, BASE=reduce?0:11, ringPaused=false, ringVisible=true, MORPH={e:1,show:anim?0:1}, tilt={x:0,y:0,tx:0,ty:0};
 var drag={on:false,x0:0,last:0,v:0,id:null};
 stage.addEventListener("pointerdown",function(e){ drag.on=true; drag.x0=drag.last=e.clientX; drag.v=0; dragMoved=false; drag.id=e.pointerId; });
 window.addEventListener("pointermove",function(e){ if(!drag.on||e.pointerId!==drag.id) return; var dx=e.clientX-drag.last; drag.last=e.clientX;
@@ -730,13 +730,12 @@ if(hasG && !reduce){
   tl.to(o,{f:24,duration:.9,ease:"none",onUpdate:function(){ltc.textContent=tc(o.f/24);}})
     .to(loader,{yPercent:-100,duration:.9,ease:"power4.inOut",onComplete:killLoader})
     .addLabel("in","-=.5")
-    .to(MORPH,{show:1,duration:1.1,ease:"power2.out"},"in")
+    .to(MORPH,{show:1,duration:.9,ease:"power2.out"},"in")
     .from("header.top",{opacity:0,duration:.6},"in")
     .from("#services > *",{opacity:0,y:-10,duration:.6,stagger:.07,ease:"power3.out"},"in+=.2")
     .from(".vf i",{scale:0,opacity:0,duration:.7,ease:"power3.out",stagger:.07},"in+=.3")
     .from(".hname .line span",{yPercent:110,duration:1.1,ease:"power4.out",stagger:.09},"in+=.35")
-    .from(".hc-kicker,.hc-right > *",{opacity:0,y:16,duration:.8,stagger:.08,ease:"power3.out"},"in+=.6")
-    .to(MORPH,{e:1,duration:2.4,ease:"sine.inOut"},"in+=1.2");
+    .from(".hc-kicker,.hc-right > *",{opacity:0,y:16,duration:.8,stagger:.08,ease:"power3.out"},"in+=.6");
 
   gsap.to(".hero-copy",{yPercent:-40,opacity:0,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:true}});
   gsap.to("#stage",{yPercent:-14,scale:.9,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:true}});
